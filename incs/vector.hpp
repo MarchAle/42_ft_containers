@@ -49,6 +49,22 @@ namespace ft
 				alloc.deallocate(array, old_capacity);
 				array = new_array;
 			};
+
+			void	_resize_cpy(T *new_array, size_t &n, T &val)
+			{
+				size_t	i = 0;
+
+				while (i < arr_size && i < n)
+				{
+					alloc.construct(new_array + i, array[i]);
+					i++;
+				}
+				while (i < n)
+				{
+					alloc.construct(new_array + i, val);
+					i++;
+				}
+			}
 			
 		public:
 			/////////// CONSTRUCTOR
@@ -106,22 +122,6 @@ namespace ft
 			{
 				return (alloc.max_size());
 			};
-
-			void	_resize_cpy(T *new_array, size_t &n, T &val)
-			{
-				size_t	i = 0;
-
-				while (i < arr_size && i < n)
-				{
-					alloc.construct(new_array + i, array[i]);
-					i++;
-				}
-				while (i < n)
-				{
-					alloc.construct(new_array + i, val);
-					i++;
-				}
-			}
 				
 			void	resize(size_t n)
 			{
@@ -254,8 +254,93 @@ namespace ft
 				return (array[arr_size - 1]);
 			};
 
+			//////////////// ITERATOR
+			class iterator
+			{
+				private:
+					T *data;
+
+				public:
+					iterator(){};
+					iterator(const iterator &src)
+					{
+						data = src.data;
+					};
+					~iterator(){};
+					void	set_data(T *src)
+					{
+						data = src;
+					};
+			};
+
+			iterator begin()
+			{
+				iterator it;
+
+				it.set_data(array[0]);
+				// it.data = array[0];
+				return (it);
+			};
+
 	};
 }
 
+/*
+template <typename T>
+class VectorIterator {
+public:
+    using value_type = T;
+    using reference = T&;
+    using pointer = T*;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::random_access_iterator_tag;
+
+    // Constructors and destructor
+    VectorIterator(pointer ptr) : ptr_(ptr) {}
+    VectorIterator(const VectorIterator& other) : ptr_(other.ptr_) {}
+    ~VectorIterator() = default;
+
+    // Operators
+    reference operator*() const { return *ptr_; }
+    pointer operator->() const { return ptr_; }
+    VectorIterator& operator++() { ++ptr_; return *this; }
+    VectorIterator operator++(int) { VectorIterator tmp(*this); ++ptr_; return tmp; }
+    VectorIterator& operator--() { --ptr_; return *this; }
+    VectorIterator operator--(int) { VectorIterator tmp(*this); --ptr_; return tmp; }
+    VectorIterator& operator+=(difference_type n) { ptr_ += n; return *this; }
+    VectorIterator& operator-=(difference_type n) { ptr_ -= n; return *this; }
+    reference operator[](difference_type n) const { return ptr_[n]; }
+
+    // Comparison operators
+    bool operator==(const VectorIterator& other) const { return ptr_ == other.ptr_; }
+    bool operator!=(const VectorIterator& other) const { return ptr_ != other.ptr_; }
+    bool operator<(const VectorIterator& other) const { return ptr_ < other.ptr_; }
+    bool operator>(const VectorIterator& other) const { return ptr_ > other.ptr_; }
+    bool operator<=(const VectorIterator& other) const { return ptr_ <= other.ptr_; }
+    bool operator>=(const VectorIterator& other) const { return ptr_ >= other.ptr_; }
+
+private:
+    pointer ptr_;
+};
+
+template <typename T>
+VectorIterator<T> operator+(VectorIterator<T> it, typename VectorIterator<T>::difference_type n) {
+    it += n;
+    return it;
+}
+
+template <typename T>
+VectorIterator<T> operator-(VectorIterator<T> it, typename VectorIterator<T>::difference_type n) {
+    it -= n;
+    return it;
+}
+
+template <typename T>
+typename VectorIterator<T>::difference_type operator-(const VectorIterator<T>& a, const VectorIterator<T>& b) {
+    return a.ptr_ - b.ptr_;
+}
+
+
+*/
 
 #endif

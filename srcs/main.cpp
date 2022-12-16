@@ -15,13 +15,15 @@
 
 int	main()
 {
-	std::vector<std::string> my_vec;
+	ft::vector<int> my_vec;
 	// std::vector<std::vector<int> > my_vec;
 	// ft::vector<ft::vector<int> > my_vec;
 
 	// vec.push_back(0);
 	// std::cout << vec[6] << std::endl;
 	
+
+
 	int array_size = 5;
 	for (int i = 0; i < array_size; i++)
 	{
@@ -29,7 +31,7 @@ int	main()
 		// ft::vector<int> test;
 		// test.push_back(123);
 		// test.push_back(789);
-		my_vec.push_back("test");
+		my_vec.push_back(i);
 		// std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
 		// std::cout << "test " << test.front() << " " << test.back() << std::endl;
 		// std::cout << "my_vec.at(i)\t" << my_vec.at(i).front() << " " << my_vec.at(i).back() << std::endl;
@@ -37,6 +39,7 @@ int	main()
 	}
 	try
 	{
+		ft::vector<int>::iterator it = my_vec.begin();
 		// my_vec.at(189) = 88;
 		// my_vec.at(0) = 456;
 		// std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
