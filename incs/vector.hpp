@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2022/12/15 16:54:16 by amarchal         ###   ########.fr       */
+/*   Updated: 2022/12/19 16:53:40 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,22 @@ namespace ft
 				alloc.deallocate(array, old_capacity);
 				array = new_array;
 			};
+
+			void	_resize_cpy(T *new_array, size_t &n)
+			{
+				size_t	i = 0;
+
+				while (i < arr_size && i < n)
+				{
+					alloc.construct(new_array + i, array[i]);
+					i++;
+				}
+				while (i < n)
+				{
+					alloc.construct(new_array + i, T());
+					i++;
+				}
+			}
 
 			void	_resize_cpy(T *new_array, size_t &n, T &val)
 			{
@@ -126,7 +142,6 @@ namespace ft
 			void	resize(size_t n)
 			{
 				T*		new_array;
-				T		def_val;
 				
 				if (n == arr_size)
 					return ;
@@ -144,7 +159,7 @@ namespace ft
 							vec_capacity = n;
 					}
 					new_array = alloc.allocate(vec_capacity);
-					_resize_cpy(new_array, n, def_val);
+					_resize_cpy(new_array, n);
 					for (size_t i = 0; i < arr_size; i++)
 						alloc.destroy(array + i);
 					alloc.deallocate(array, old_capacity);
@@ -261,25 +276,76 @@ namespace ft
 					T *data;
 
 				public:
-					iterator(){};
+					iterator(T* ptr)
+					{
+						data = ptr;
+					};
 					iterator(const iterator &src)
 					{
 						data = src.data;
 					};
 					~iterator(){};
-					void	set_data(T *src)
+					
+					//////// INCREMENT DECREMENT
+					iterator &operator++()
 					{
-						data = src;
+						data++;
+						return (*this);
+					}
+					iterator operator++(int)
+					{
+						iterator tmp = *this;
+						++(*this);
+						return (tmp);
+					}
+					iterator &operator--()
+					{
+						data--;
+						return (*this);
+					}
+					iterator operator--(int)
+					{
+						iterator tmp = *this;
+						--(*this);
+						return (tmp);
+					}
+					
+					//////// INDEX OPERATOR
+					T &operator[](int index)
+					{
+						return (*(data[index]));	
 					};
+					
+					T *operator->()
+					{
+						return (data);	
+					};
+					
+					T &operator*()
+					{
+						return (*data);	
+					};
+
+					//////// COMPARAISON OPERATOR
+					bool operator==(const iterator &other) const
+					{
+						return (data == other->data);
+					}
+					
+					bool operator!=(const iterator &other) const
+					{
+						return (data != other->data);
+					}
 			};
 
 			iterator begin()
 			{
-				iterator it;
+				return (iterator(array));
+			};
 
-				it.set_data(array[0]);
-				// it.data = array[0];
-				return (it);
+			iterator end()
+			{
+				return (iterator(array + arr_size));
 			};
 
 	};

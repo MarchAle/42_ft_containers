@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 14:08:50 by amarchal          #+#    #+#             */
-/*   Updated: 2022/12/15 16:47:09 by amarchal         ###   ########.fr       */
+/*   Updated: 2022/12/19 16:51:05 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 int	main()
 {
-	ft::vector<int> my_vec;
+	ft::vector<std::string> my_vec;
 	// std::vector<std::vector<int> > my_vec;
 	// ft::vector<ft::vector<int> > my_vec;
 
@@ -31,7 +31,7 @@ int	main()
 		// ft::vector<int> test;
 		// test.push_back(123);
 		// test.push_back(789);
-		my_vec.push_back(i);
+		my_vec.push_back("hello");
 		// std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
 		// std::cout << "test " << test.front() << " " << test.back() << std::endl;
 		// std::cout << "my_vec.at(i)\t" << my_vec.at(i).front() << " " << my_vec.at(i).back() << std::endl;
@@ -39,7 +39,19 @@ int	main()
 	}
 	try
 	{
-		ft::vector<int>::iterator it = my_vec.begin();
+		my_vec.resize(10, "trtr");
+		ft::vector<std::string>::iterator it = my_vec.begin();
+
+		std::cout << *it << std::endl;
+		it++;
+		++it;
+		++it;
+		++it;
+		++it;
+		++it;
+		++it;
+		
+		std::cout << *it << std::endl;
 		// my_vec.at(189) = 88;
 		// my_vec.at(0) = 456;
 		// std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
@@ -51,14 +63,14 @@ int	main()
 		// my_vec.push_back("test");
 		// my_vec.resize(39, "blabla");
 		// my_vec.resize(3, "blabla");
-		// my_vec.resize(10);
-		// my_vec.resize(11);
+		// my_vec.resize(4894891818949);
 		// my_vec.resize(9);
 		// my_vec.resize(13, "plus");
 		// my_vec.resize(11);
+		
 		// std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
 		// my_vec.push_back("coucou");
-		my_vec.reserve(19);
+		// my_vec.reserve(19);
 		std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
 		// std::cout << "Size : " << my_vec[0].front() << " Capacity : " << my_vec[0].capacity() << std::endl;
 		// my_vec.push_back(666);
