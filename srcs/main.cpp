@@ -41,8 +41,10 @@ int	main()
 	{
 		my_vec.resize(10, "trtr");
 		ft::vector<std::string>::iterator it = my_vec.begin();
+		// std::vector<std::string>::reverse_iterator rit = my_vec.rbegin();
 
-		std::cout << *it << std::endl;
+		// std::cout << *it << " " << *rit << std::endl;
+		std::cout << (*it == *it) << std::endl;
 		it++;
 		++it;
 		++it;
