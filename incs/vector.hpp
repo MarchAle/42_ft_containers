@@ -118,6 +118,26 @@ namespace ft
 			};
 
 			///////// MODIFIERS
+			void	assign(size_t n, const T &val)
+			{
+				for (size_t i = 0; i < arr_size; i++)
+					alloc.destroy(array + i);
+				if (n <= vec_capacity)
+				{
+					for (size_t i = 0; i < n; i++)
+						alloc.construct(array + i, val);
+				}
+				else
+				{
+					for (size_t i = 0; i < arr_size; i++)
+						alloc.construct(array + i, val);
+					reserve(n);
+					for (size_t i = arr_size; i < n; i++)
+						alloc.construct(array + i, val);
+				}
+				arr_size = n;
+			}
+
 			void	push_back(const T &e)
 			{
 				if (arr_size == 0)
@@ -202,7 +222,7 @@ namespace ft
 				}
 				catch(const std::bad_alloc& e)
 				{
-					alloc.deallocate(new_array, vec_capacity);
+					// alloc.deallocate(new_array, vec_capacity);
 					throw ;
 				}
 			};
@@ -269,7 +289,7 @@ namespace ft
 				return (array[arr_size - 1]);
 			};
 
-			//////////////// ITERATOR
+			//////////////// ITERATORS
 			class iterator
 			{
 				private:
@@ -381,7 +401,7 @@ namespace ft
 					reverse_iterator operator++(int)
 					{
 						reverse_iterator tmp = *this;
-						--(*this);
+						data--;
 						return (tmp);
 					}
 					reverse_iterator &operator--()
@@ -392,7 +412,7 @@ namespace ft
 					reverse_iterator operator--(int)
 					{
 						reverse_iterator tmp = *this;
-						++(*this);
+						data++;
 						return (tmp);
 					}
 					
@@ -447,9 +467,39 @@ namespace ft
 				return (iterator(array));
 			};
 
+			iterator cbegin() const
+			{
+				return (iterator(array));
+			};
+
 			iterator end()
 			{
 				return (iterator(array + arr_size));
+			};
+
+			iterator cend() const
+			{
+				return (iterator(array + arr_size));
+			};
+
+			reverse_iterator rbegin()
+			{
+				return (reverse_iterator(array + arr_size - 1));
+			};
+
+			reverse_iterator crbegin() const
+			{
+				return (reverse_iterator(array + arr_size - 1));
+			};
+
+			reverse_iterator rend()
+			{
+				return (reverse_iterator(array - 1));
+			};
+
+			reverse_iterator crend() const
+			{
+				return (reverse_iterator(array - 1));
 			};
 
 	};
