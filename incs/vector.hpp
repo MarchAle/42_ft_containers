@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2022/12/19 16:53:40 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/04 16:19:14 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@
 # include <iostream>
 # include <cstring>
 # include <stdexcept>
+# include <iterator>
 
 # include <memory>
 # include <new>
 
 namespace ft
 {
-	template<typename T, class Allocator = std::allocator<T> > 
+	template<class T, class Allocator = std::allocator<T> > 
 	class vector
 	{
-		typedef T value_type;
 
 		private:
 			T*			array;
@@ -83,17 +83,35 @@ namespace ft
 			}
 			
 		public:
-			/////////// CONSTRUCTOR
-			vector()
+			typedef T 			value_type;
+			typedef Allocator 	allocator_type;
+			typedef	size_t		size_type;
+			
+			/////////// DEFAULT CONSTRUCTOR
+			explicit vector(const allocator_type& alloc = allocator_type()) : alloc(alloc)
 			{
 				array = NULL;
 				arr_size = 0;
 				vec_capacity = 1;
 			};
-			/////////// COPY CONSTRUCTOR
-			vector(const vector &src)
+			/////////// FILL CONSTRUCTOR
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : alloc(alloc)
 			{
-				*this = src;
+				arr_size = n;
+				vec_capacity = n;
+				array = this->alloc.allocate(vec_capacity);
+				for (size_type i = 0; i < arr_size; i++)
+					this->alloc.construct(array + i, val);
+			};
+			/////////// RANGE CONSTRUCTOR
+			// template <class InputIterator> vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+			// {
+				
+			// }
+			/////////// COPY CONSTRUCTOR
+			vector(const vector &x)
+			{
+				*this = x;
 			};
 			/////////// ASSIGNATION OPERATOR OVERLOAD
 			vector &operator=(const vector &src)
@@ -101,9 +119,7 @@ namespace ft
 				this->alloc = src.alloc;
 				this->array = alloc.allocate(src.vec_capacity);
 				for (size_t i = 0; i < src.arr_size; i++)
-				{
 					alloc.construct(array + i, src.array[i]);
-				}
 				this->arr_size = src.arr_size;
 				this->vec_capacity = src.vec_capacity;
 				

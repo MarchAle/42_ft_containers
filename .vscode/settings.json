@@ -67,6 +67,9 @@
 		"deque": "cpp",
 		"numeric": "cpp",
 		"random": "cpp",
-		"fstream": "cpp"
+		"fstream": "cpp",
+		"map": "cpp",
+		"set": "cpp",
+		"__tree": "cpp"
 	}
 }

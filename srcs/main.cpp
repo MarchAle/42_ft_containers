@@ -6,17 +6,22 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 14:08:50 by amarchal          #+#    #+#             */
-/*   Updated: 2022/12/19 16:51:05 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/04 17:09:14 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/vector.hpp"
 #include <vector>
+#include <iterator>
 
 int	main()
 {
-	ft::vector<int> my_vec;
-	ft::vector<int> my_vec_assign;
+	std::iterator_traits;
+	ft::vector<int> my_vec(4, 789);
+	ft::vector<int> my_vec_assign(my_vec);
+
+	ft::vector<int>::value_type a = 5;
+	my_vec.push_back(a);
 	// ft::vector<int> my_vec;
 	// std::vector<std::vector<int> > my_vec;
 	// ft::vector<ft::vector<int> > my_vec;
@@ -36,8 +41,8 @@ int	main()
 		// std::vector<int>::iterator it_begin = my_vec.begin();
 		// std::vector<int>::iterator it_end = my_vec.end();
 
-		my_vec_assign.assign(2, 123);
-		my_vec.assign(5, 555);
+		// my_vec_assign.assign(2, 123);
+		// my_vec.assign(5, 555);
 
 		std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
 	}
