@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 16:21:35 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/04 17:18:49 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/05 15:28:25 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,36 @@
 namespace ft
 {
 	template <class Iterator>
-	class iterator_traits<Iterator, true>
+	class iterator_traits
 	{
-		
-		typedef typename Iterator::difference_type   difference_type;
-		typedef typename Iterator::value_type        value_type;
-		typedef typename Iterator::pointer           pointer;
-		typedef typename Iterator::reference         reference;
-		typedef typename Iterator::iterator_category iterator_category;
+		public :
+			typedef typename Iterator::difference_type   difference_type;
+			typedef typename Iterator::value_type        value_type;
+			typedef typename Iterator::pointer           pointer;
+			typedef typename Iterator::reference         reference;
+			typedef typename Iterator::iterator_category iterator_category;
+	};
+	
+	template <class T>
+	class iterator_traits <T *>
+	{
+		public :
+			typedef std::ptrdiff_t   					difference_type;
+			typedef T			      					value_type;
+			typedef T*									pointer;
+			typedef T&									reference;
+			typedef std::random_access_iterator_tag 	iterator_category;
+	};
+	
+	template <class T>
+	class iterator_traits <const T *>
+	{
+		public :
+			typedef 		std::ptrdiff_t   					difference_type;
+			typedef 		T	      							value_type;
+			typedef const 	T*									pointer;
+			typedef const 	T&									reference;
+			typedef 		std::random_access_iterator_tag 	iterator_category;
 	};
 }
 

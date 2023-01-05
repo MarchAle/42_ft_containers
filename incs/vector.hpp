@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/04 16:19:14 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/05 16:47:06 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,11 @@ namespace ft
 					this->alloc.construct(array + i, val);
 			};
 			/////////// RANGE CONSTRUCTOR
-			// template <class InputIterator> vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
-			// {
+			template <class InputIterator> typename ft::enable_if<std::is_same<typename InputIterator::value_type, ft::vector<T>::itreator>::value, void>::type 
+			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+			{
 				
-			// }
+			}
 			/////////// COPY CONSTRUCTOR
 			vector(const vector &x)
 			{
@@ -312,6 +313,12 @@ namespace ft
 					T *data;
 
 				public:
+					typedef	std::ptrdiff_t					difference_type;
+					typedef T								value_type;
+					typedef	T*								pointer;
+					typedef	T&								reference;
+					typedef std::random_access_iterator_tag iterator_category;
+					
 					iterator(T* ptr)
 					{
 						data = ptr;
@@ -387,6 +394,97 @@ namespace ft
 					}
 					
 					bool operator<(const iterator &other) const
+					{
+						return (data < other->data);
+					}
+			};
+			class const_iterator
+			{
+				private:
+					T *data;
+
+				public:
+					typedef	std::ptrdiff_t					difference_type;
+					typedef T								value_type;
+					typedef	const T*						pointer;
+					typedef	const T&						reference;
+					typedef std::random_access_iterator_tag iterator_category;
+					
+					const_iterator(T* ptr)
+					{
+						data = ptr;
+					};
+					const_iterator(const const_iterator &src)
+					{
+						data = src.data;
+					};
+					~const_iterator(){};
+					
+					//////// INCREMENT DECREMENT
+					const_iterator &operator++()
+					{
+						data++;
+						return (*this);
+					}
+					const_iterator operator++(int)
+					{
+						const_iterator tmp = *this;
+						++(*this);
+						return (tmp);
+					}
+					const_iterator &operator--()
+					{
+						data--;
+						return (*this);
+					}
+					const_iterator operator--(int)
+					{
+						const_iterator tmp = *this;
+						--(*this);
+						return (tmp);
+					}
+					
+					//////// INDEX OPERATOR
+					T &operator[](int index)
+					{
+						return (*(data[index]));	
+					};
+					
+					T *operator->()
+					{
+						return (data);	
+					};
+					
+					T &operator*()
+					{
+						return (*data);	
+					};
+
+					//////// COMPARAISON OPERATOR
+					bool operator==(const const_iterator &other) const
+					{
+						return (data == other->data);
+					}
+					
+					bool operator!=(const const_iterator &other) const
+					{
+						return (data != other->data);
+					}
+					bool operator>=(const const_iterator &other) const
+					{
+						return (data >= other->data);
+					}
+					
+					bool operator<=(const const_iterator &other) const
+					{
+						return (data <= other->data);
+					}
+					bool operator>(const const_iterator &other) const
+					{
+						return (data > other->data);
+					}
+					
+					bool operator<(const const_iterator &other) const
 					{
 						return (data < other->data);
 					}

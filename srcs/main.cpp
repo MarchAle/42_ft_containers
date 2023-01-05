@@ -6,19 +6,22 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 14:08:50 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/04 17:09:14 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/05 11:29:24 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/vector.hpp"
+#include "../incs/iterator_traits.hpp"
 #include <vector>
 #include <iterator>
 
 int	main()
 {
-	std::iterator_traits;
 	ft::vector<int> my_vec(4, 789);
 	ft::vector<int> my_vec_assign(my_vec);
+
+	ft::vector<int>::iterator it = my_vec.begin();
+	std::cout << typeid(ft::iterator_traits<ft::vector<int>::iterator>::iterator_category).name() << std::endl;;
 
 	ft::vector<int>::value_type a = 5;
 	my_vec.push_back(a);
