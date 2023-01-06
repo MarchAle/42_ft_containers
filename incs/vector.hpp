@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/05 16:47:06 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/06 14:33:03 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,13 @@
 # include <iostream>
 # include <cstring>
 # include <stdexcept>
-# include <iterator>
+// # include <iterator>
 
 # include <memory>
 # include <new>
+
+# include "./enable_if.hpp"
+# include "./is_integral.hpp"
 
 namespace ft
 {
@@ -94,6 +97,29 @@ namespace ft
 				arr_size = 0;
 				vec_capacity = 1;
 			};
+			/////////// RANGE CONSTRUCTOR
+			 // si lors de la compilation `type` n'est pas defini par enable_if, alors cette fonction sera ignoree sans erreur
+			template <class InputIterator>
+			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type = NULL) : alloc(alloc)
+			{
+				size_type 		size = 0;
+				
+				array = NULL;
+				while (first != last)
+				{
+					size++;
+					first++;
+				}
+				arr_size = size;
+				vec_capacity = size;
+				array = this->alloc.allocate(vec_capacity);
+				while (size > 0)
+				{
+					this->alloc.construct(array + size, *first);
+					size--;
+					first--;
+				}
+			}
 			/////////// FILL CONSTRUCTOR
 			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) : alloc(alloc)
 			{
@@ -103,12 +129,6 @@ namespace ft
 				for (size_type i = 0; i < arr_size; i++)
 					this->alloc.construct(array + i, val);
 			};
-			/////////// RANGE CONSTRUCTOR
-			template <class InputIterator> typename ft::enable_if<std::is_same<typename InputIterator::value_type, ft::vector<T>::itreator>::value, void>::type 
-			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
-			{
-				
-			}
 			/////////// COPY CONSTRUCTOR
 			vector(const vector &x)
 			{
@@ -372,30 +392,51 @@ namespace ft
 					//////// COMPARAISON OPERATOR
 					bool operator==(const iterator &other) const
 					{
-						return (data == other->data);
+						return (data == other.data);
 					}
 					
 					bool operator!=(const iterator &other) const
 					{
-						return (data != other->data);
+						return (data != other.data);
 					}
 					bool operator>=(const iterator &other) const
 					{
-						return (data >= other->data);
+						return (data >= other.data);
 					}
 					
 					bool operator<=(const iterator &other) const
 					{
-						return (data <= other->data);
+						return (data <= other.data);
 					}
 					bool operator>(const iterator &other) const
 					{
-						return (data > other->data);
+						return (data > other.data);
 					}
 					
 					bool operator<(const iterator &other) const
 					{
-						return (data < other->data);
+						return (data < other.data);
+					}
+
+					//////// ARITHMETIC OPERATOR
+					iterator operator+(int n) const
+					{
+						return iterator(data + n);
+					}
+					
+					iterator operator-(int n) const
+					{
+						return iterator(data - n);
+					}
+					
+					int operator+(iterator other) const
+					{
+						return data + other.data;
+					}
+					
+					int operator-(iterator other) const
+					{
+						return data - other.data;
 					}
 			};
 			class const_iterator
