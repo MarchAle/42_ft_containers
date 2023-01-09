@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/09 15:21:10 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/09 16:30:35 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -527,6 +527,64 @@ namespace ft
 				}
 				alloc.construct(array + index, val);
 				return (array + index);
+			}
+
+			void	insert(iterator position, size_type n, const value_type& val)
+			{
+				size_type	index = position - this->begin();
+				size_type	end = arr_size;
+				
+				if (index > end || index < 0)
+					throw std::out_of_range("Can't insert outside vector");
+				arr_size += n;
+				if (arr_size > vec_capacity)
+					_move_array(vec_capacity * 2);
+				while (end >= index)
+				{
+					alloc.construct(array + end + n, array[end]);
+					alloc.destroy(array + end);
+					if (end == 0)
+						break ;
+					end--;
+				}
+				while (n >= 0)
+				{
+					n--;
+					alloc.construct(array + index + n, val);
+					if (n == 0)
+						break ;
+				}
+			}
+
+			template<class InputIterator>
+			void	insert(iterator position, InputIterator first, InputIterator last)
+			{
+				size_type	index = position - this->begin();
+				size_type	end = arr_size;
+				size_type	n = last - first;
+				
+				if (index > end || index < 0)
+					throw std::out_of_range("Can't insert outside vector");
+				arr_size += n;
+				if (arr_size > vec_capacity)
+					_move_array(vec_capacity * 2);
+				while (end >= index)
+				{
+					alloc.construct(array + end + n, array[end]);
+					alloc.destroy(array + end);
+					if (end == 0)
+						break ;
+					end--;
+				}
+				while (n >= 0)
+				{
+					n--;
+					alloc.construct(array + index + n, *last);
+					last--;
+					if (n == 0)
+						break ;
+				}
+				
 			}
 
 			///////// CAPACITY

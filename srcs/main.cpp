@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 14:08:50 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/09 15:21:27 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/09 16:05:02 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main()
 	{
 		my_vec.push_back(i);
 	}
-	my_vec.insert(my_vec.begin(), 789);
+	my_vec.insert(my_vec.begin(), 3, 789);
 	my_vec_assign.assign(my_vec.begin(), my_vec.end());
 	my_vec_assign.assign(4, 444);
 	// ft::vector<int>::value_type a = 5;
