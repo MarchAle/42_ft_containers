@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/06 14:33:03 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/09 11:09:29 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ namespace ft
 			{
 				array = NULL;
 				arr_size = 0;
-				vec_capacity = 1;
+				vec_capacity = 0;
 			};
 			/////////// RANGE CONSTRUCTOR
 			 // si lors de la compilation `type` n'est pas defini par enable_if, alors cette fonction sera ignoree sans erreur
@@ -155,6 +155,28 @@ namespace ft
 			};
 
 			///////// MODIFIERS
+			template<class InputIterator>
+			void assign(InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type = NULL)
+			{
+				size_type size = 0;
+				InputIterator tmp = first;
+				
+				while (tmp != last)
+				{
+					size++;
+					tmp++;
+				}
+				for (size_t i = 0; i < arr_size; i++)
+					alloc.destroy(array + i);
+				if (size > vec_capacity)
+				{
+					reserve(size);
+					arr_size = size;
+				}
+				for (size_t i = 0; i < size; i++)
+					alloc.construct(array + i, *(first + i));
+			}
+			
 			void	assign(size_t n, const T &val)
 			{
 				for (size_t i = 0; i < arr_size; i++)
