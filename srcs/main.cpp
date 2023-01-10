@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 14:08:50 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/09 16:05:02 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/10 14:22:17 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,20 @@ int	main()
 {
 	try
 	{
-	int array_size = 4;
+	int array_size = 2;
 	ft::vector<int> my_vec;
 	ft::vector<int> my_vec_assign;
 	
 
-	for (int i = 0; i < array_size; i++)
+	for (int i = 1; i < array_size + 1; i++)
 	{
 		my_vec.push_back(i);
 	}
-	my_vec.insert(my_vec.begin(), 3, 789);
-	my_vec_assign.assign(my_vec.begin(), my_vec.end());
-	my_vec_assign.assign(4, 444);
+	// my_vec.insert(my_vec.begin(), 3, 789);
+	// my_vec_assign.assign(my_vec.begin(), my_vec.end());
+	my_vec_assign.assign(2, 111);
+	my_vec_assign.insert(my_vec_assign.begin(), my_vec.begin(), my_vec.end());
+	
 	// ft::vector<int>::value_type a = 5;
 	// my_vec.push_back(a);
 	// ft::vector<int> my_vec;
@@ -48,8 +50,8 @@ int	main()
 		// my_vec_assign.assign(2, 123);
 		// my_vec.assign(5, 555);
 
-		std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
-		std::cout << "Size : " << my_vec_assign.size() << " Capacity : " << my_vec_assign.capacity() << std::endl;
+	std::cout << "Size : " << my_vec.size() << " Capacity : " << my_vec.capacity() << std::endl;
+	std::cout << "Size : " << my_vec_assign.size() << " Capacity : " << my_vec_assign.capacity() << std::endl;
 	
 	std::cout << std::endl;
 	for (size_t i = 0; i < my_vec.size(); i++)

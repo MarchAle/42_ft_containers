@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/09 16:30:35 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/10 14:22:11 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -557,11 +557,12 @@ namespace ft
 			}
 
 			template<class InputIterator>
-			void	insert(iterator position, InputIterator first, InputIterator last)
+			void	insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type = NULL)
 			{
 				size_type	index = position - this->begin();
 				size_type	end = arr_size;
-				size_type	n = last - first;
+				ptrdiff_t	n = std::distance(first, last);
+				last--;
 				
 				if (index > end || index < 0)
 					throw std::out_of_range("Can't insert outside vector");
@@ -576,15 +577,14 @@ namespace ft
 						break ;
 					end--;
 				}
-				while (n >= 0)
+				while (n > 0)
 				{
-					n--;
-					alloc.construct(array + index + n, *last);
-					last--;
+					alloc.construct(array + index + n - 1, *last);
 					if (n == 0)
 						break ;
+					last--;
+					n--;
 				}
-				
 			}
 
 			///////// CAPACITY
