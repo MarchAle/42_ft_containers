@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/10 14:22:11 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/10 16:32:23 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -562,13 +562,22 @@ namespace ft
 				size_type	index = position - this->begin();
 				size_type	end = arr_size;
 				ptrdiff_t	n = std::distance(first, last);
-				last--;
 				
+				last--;
 				if (index > end || index < 0)
 					throw std::out_of_range("Can't insert outside vector");
 				arr_size += n;
 				if (arr_size > vec_capacity)
-					_move_array(vec_capacity * 2);
+				{
+					if (vec_capacity == 0)
+					{
+						vec_capacity++;
+						array = alloc.allocate(vec_capacity);
+					}
+					while (arr_size > vec_capacity)
+						vec_capacity *= 2;
+					_move_array(vec_capacity);
+				}
 				while (end >= index)
 				{
 					alloc.construct(array + end + n, array[end]);
@@ -585,6 +594,38 @@ namespace ft
 					last--;
 					n--;
 				}
+			}
+
+			iterator	erase(iterator position)
+			{
+				size_type	index = position - this->begin();
+				
+				alloc.destroy(array + index);
+				arr_size--;
+				while (array + index != array + arr_size)
+				{
+					alloc.construct(array + index, *(array + index + 1));
+					alloc.destroy(array + index + 1);
+					index++;
+				}
+				return (position);
+			}
+
+			iterator	erase(iterator first, iterator last)
+			{
+				size_type	index = first - this->begin();
+				size_type	n = last - first;
+				
+				for (size_type i = 0; i < n; i++)
+					alloc.destroy(array + index + i);
+				arr_size -= n;
+				while (index < arr_size)
+				{
+					alloc.construct(array + index, *(array + index + n));
+					alloc.destroy(array + index + n);
+					index++;
+				}
+				return (first);
 			}
 
 			///////// CAPACITY
