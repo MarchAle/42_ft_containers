@@ -71,6 +71,9 @@
 		"map": "cpp",
 		"set": "cpp",
 		"__tree": "cpp",
-		"stack": "cpp"
+		"stack": "cpp",
+		"*.ipp": "cpp",
+		"csignal": "cpp",
+		"iomanip": "cpp"
 	}
 }

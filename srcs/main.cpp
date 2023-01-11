@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 14:08:50 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/10 16:32:58 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/11 18:55:18 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,60 @@ int	main()
 {
 	try
 	{
-	int array_size = 5;
+	int array_size = 4;
 	ft::vector<int> my_vec;
 	ft::vector<int> my_vec_assign;
 	
 
 	for (int i = 1; i < array_size + 1; i++)
 	{
-		my_vec.push_back(i);
+		// my_vec.push_back(i);
 	}
 	// my_vec.insert(my_vec.begin(), 3, 789);
 	// my_vec_assign.assign(my_vec.begin(), my_vec.end());
 	// my_vec_assign.assign(2, 111);
 	// my_vec_assign.push_back(555);
 	// my_vec_assign.pop_back();
-	my_vec_assign.insert(my_vec_assign.begin(), my_vec.begin(), my_vec.end());
+	// my_vec.assign(5, 666);
+	my_vec.insert(my_vec.begin(), 2, 321);
 	
-	std::cout << "erase : " << *(my_vec_assign.erase(my_vec_assign.begin() + 1, my_vec_assign.end() - 2)) << std::endl;
+	// std::vector<int>::iterator it = my_vec.begin();
+	// std::vector<int>::iterator it2 = my_vec_assign.begin();
+
+	// std::cout << "it " << *it << std::endl;
+	// std::cout << "my_vec.begin() " << *(my_vec.begin()) << std::endl;
+	// std::cout << "it2 " << *it2 << std::endl;
+	// std::cout << "my_vec_assign.begin() " << *(my_vec_assign.begin()) << std::endl << std::endl;
+
+	// my_vec.swap(my_vec_assign);
+	
+	// std::cout << "it " << *it << std::endl;
+	// std::cout << "my_vec.begin() " << *(my_vec.begin()) << std::endl;
+	// std::cout << "it2 " << *it2 << std::endl;
+	// std::cout << "my_vec_assign.begin() " << *(my_vec_assign.begin()) << std::endl << std::endl;
+
+	// std::swap(my_vec, my_vec_assign);
+	
+	// std::cout << "it " << *it << std::endl;
+	// std::cout << "my_vec.begin() " << *(my_vec.begin()) << std::endl;
+	// std::cout << "it2 " << *it2 << std::endl;
+	// std::cout << "my_vec_assign.begin() " << *(my_vec_assign.begin()) << std::endl << std::endl;
+	
+	// my_vec_assign = my_vec;
+	// my_vec.pop_back();
+	// my_vec.pop_back();
+	// my_vec.push_back(456);
+	
+	// std::cout << (my_vec == my_vec_assign) << std::endl;
+	// std::cout << (my_vec != my_vec_assign) << std::endl;
+	// std::cout << (my_vec < my_vec_assign) << std::endl;
+	// std::cout << (my_vec > my_vec_assign) << std::endl;
+	// std::cout << (my_vec <= my_vec_assign) << std::endl;
+	// std::cout << (my_vec >= my_vec_assign) << std::endl;
+	
+	// my_vec.shrink_to_fit();
+	
+	// std::cout << "erase : " << *(my_vec_assign.erase(my_vec_assign.begin() + 1, my_vec_assign.end() - 2)) << std::endl;
 	// ft::vector<int>::value_type a = 5;
 	// my_vec.push_back(a);
 	// ft::vector<int> my_vec;

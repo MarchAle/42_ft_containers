@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/10 16:32:23 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/11 19:01:00 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,10 @@
 # include <memory>
 # include <new>
 
+# include "./reverse_iterator.hpp"
 # include "./enable_if.hpp"
 # include "./is_integral.hpp"
+# include "./lexicographical_compare.hpp"
 
 namespace ft
 {
@@ -234,91 +236,91 @@ namespace ft
 					}
 			};
 
-			class reverse_iterator
-			{
-				private:
-					T *data;
+			// class reverse_iterator
+			// {
+			// 	private:
+			// 		T *data;
 
-				public:
-					reverse_iterator(T* ptr)
-					{
-						data = ptr;
-					};
-					reverse_iterator(const reverse_iterator &src)
-					{
-						data = src.data;
-					};
-					~reverse_iterator(){};
+			// 	public:
+			// 		reverse_iterator(T* ptr)
+			// 		{
+			// 			data = ptr;
+			// 		};
+			// 		reverse_iterator(const reverse_iterator &src)
+			// 		{
+			// 			data = src.data;
+			// 		};
+			// 		~reverse_iterator(){};
 					
-					//////// INCREMENT DECREMENT
-					reverse_iterator &operator++()
-					{
-						data--;
-						return (*this);
-					}
-					reverse_iterator operator++(int)
-					{
-						reverse_iterator tmp = *this;
-						data--;
-						return (tmp);
-					}
-					reverse_iterator &operator--()
-					{
-						data++;
-						return (*this);
-					}
-					reverse_iterator operator--(int)
-					{
-						reverse_iterator tmp = *this;
-						data++;
-						return (tmp);
-					}
+			// 		//////// INCREMENT DECREMENT
+			// 		reverse_iterator &operator++()
+			// 		{
+			// 			data--;
+			// 			return (*this);
+			// 		}
+			// 		reverse_iterator operator++(int)
+			// 		{
+			// 			reverse_iterator tmp = *this;
+			// 			data--;
+			// 			return (tmp);
+			// 		}
+			// 		reverse_iterator &operator--()
+			// 		{
+			// 			data++;
+			// 			return (*this);
+			// 		}
+			// 		reverse_iterator operator--(int)
+			// 		{
+			// 			reverse_iterator tmp = *this;
+			// 			data++;
+			// 			return (tmp);
+			// 		}
 					
-					//////// INDEX OPERATOR
-					T &operator[](int index)
-					{
-						return (*(data[index]));	
-					};
+			// 		//////// INDEX OPERATOR
+			// 		T &operator[](int index)
+			// 		{
+			// 			return (*(data[index]));	
+			// 		};
 					
-					T *operator->()
-					{
-						return (data);	
-					};
+			// 		T *operator->()
+			// 		{
+			// 			return (data);	
+			// 		};
 					
-					T &operator*()
-					{
-						return (*data);	
-					};
+			// 		T &operator*()
+			// 		{
+			// 			return (*data);	
+			// 		};
 
-					//////// COMPARAISON OPERATOR
-					bool operator==(const reverse_iterator &other) const
-					{
-						return (data == other->data);
-					}
+			// 		//////// COMPARAISON OPERATOR
+			// 		bool operator==(const reverse_iterator &other) const
+			// 		{
+			// 			return (data == other->data);
+			// 		}
 					
-					bool operator!=(const reverse_iterator &other) const
-					{
-						return (data != other->data);
-					}
-					bool operator>=(const reverse_iterator &other) const
-					{
-						return (data >= other->data);
-					}
+			// 		bool operator!=(const reverse_iterator &other) const
+			// 		{
+			// 			return (data != other->data);
+			// 		}
+			// 		bool operator>=(const reverse_iterator &other) const
+			// 		{
+			// 			return (data >= other->data);
+			// 		}
 					
-					bool operator<=(const reverse_iterator &other) const
-					{
-						return (data <= other->data);
-					}
-					bool operator>(const reverse_iterator &other) const
-					{
-						return (data > other->data);
-					}
+			// 		bool operator<=(const reverse_iterator &other) const
+			// 		{
+			// 			return (data <= other->data);
+			// 		}
+			// 		bool operator>(const reverse_iterator &other) const
+			// 		{
+			// 			return (data > other->data);
+			// 		}
 					
-					bool operator<(const reverse_iterator &other) const
-					{
-						return (data < other->data);
-					}
-			};
+			// 		bool operator<(const reverse_iterator &other) const
+			// 		{
+			// 			return (data < other->data);
+			// 		}
+			// };
 
 
 		private:
@@ -377,9 +379,10 @@ namespace ft
 			}
 			
 		public:
-			typedef T 												value_type;
-			typedef Allocator 										allocator_type;
-			typedef	size_t											size_type;
+			typedef T 			value_type;
+			typedef Allocator 	allocator_type;
+			typedef	ptrdiff_t	difference_type;
+			typedef	size_t		size_type;
 			typedef my_iterator	iterator;
 			
 			/////////// DEFAULT CONSTRUCTOR
@@ -392,7 +395,7 @@ namespace ft
 			/////////// RANGE CONSTRUCTOR
 			 // si lors de la compilation `type` n'est pas defini par enable_if, alors cette fonction sera ignoree sans erreur
 			template <class InputIterator>
-			vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(), typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type = NULL) : alloc(alloc)
+			vector (typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()) : alloc(alloc)
 			{
 				size_type 		size = 0;
 				
@@ -448,7 +451,7 @@ namespace ft
 
 			///////// MODIFIERS
 			template<class InputIterator>
-			void assign(InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type = NULL)
+			void assign(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
 				size_type size = 0;
 				InputIterator tmp = first;
@@ -471,21 +474,27 @@ namespace ft
 			
 			void	assign(size_t n, const T &val)
 			{
+				// *this->clear();
+				// *this->reserve(n);
+				// *this->insert(*this->begin(), n, val);
 				for (size_t i = 0; i < arr_size; i++)
 					alloc.destroy(array + i);
-				if (n <= vec_capacity)
-				{
-					for (size_t i = 0; i < n; i++)
-						alloc.construct(array + i, val);
-				}
-				else
-				{
-					for (size_t i = 0; i < arr_size; i++)
-						alloc.construct(array + i, val);
-					reserve(n);
-					for (size_t i = arr_size; i < n; i++)
-						alloc.construct(array + i, val);
-				}
+				reserve(n);
+				for (size_t i = 0; i < n; i++)
+					alloc.construct(array + i, val);
+				// if (n <= vec_capacity)
+				// {
+				// 	for (size_t i = 0; i < n; i++)
+				// 		alloc.construct(array + i, val);
+				// }
+				// else
+				// {
+				// 	for (size_t i = 0; i < arr_size; i++)
+				// 		alloc.construct(array + i, val);
+				// 	reserve(n);
+				// 	for (size_t i = arr_size; i < n; i++)
+				// 		alloc.construct(array + i, val);
+				// }
 				arr_size = n;
 			}
 
@@ -538,7 +547,11 @@ namespace ft
 					throw std::out_of_range("Can't insert outside vector");
 				arr_size += n;
 				if (arr_size > vec_capacity)
+				{
+					if (vec_capacity == 0)
+						vec_capacity++;
 					_move_array(vec_capacity * 2);
+				}
 				while (end >= index)
 				{
 					alloc.construct(array + end + n, array[end]);
@@ -547,7 +560,7 @@ namespace ft
 						break ;
 					end--;
 				}
-				while (n >= 0)
+				while (n > 0)
 				{
 					n--;
 					alloc.construct(array + index + n, val);
@@ -557,7 +570,7 @@ namespace ft
 			}
 
 			template<class InputIterator>
-			void	insert(iterator position, InputIterator first, InputIterator last, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type = NULL)
+			void	insert(iterator position, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
 				size_type	index = position - this->begin();
 				size_type	end = arr_size;
@@ -578,7 +591,7 @@ namespace ft
 						vec_capacity *= 2;
 					_move_array(vec_capacity);
 				}
-				while (end >= index)
+				while (end > index)
 				{
 					alloc.construct(array + end + n, array[end]);
 					alloc.destroy(array + end);
@@ -626,6 +639,34 @@ namespace ft
 					index++;
 				}
 				return (first);
+			}
+
+			void	swap(vector &x)
+			{
+				T* tmp_array = x.array;
+				x.array = this->array;
+				this->array = tmp_array;
+
+				size_type tmp_arr_size = x.arr_size;
+				x.arr_size = this->arr_size;
+				this->arr_size = tmp_arr_size;
+				
+				size_type tmp_vec_capacity = x.vec_capacity;
+				x.vec_capacity = this->vec_capacity;
+				this->vec_capacity = tmp_vec_capacity;
+			}
+
+			void	clear()
+			{
+				for (size_type i = arr_size; i > 0; i--)
+					alloc.destroy(array + i - 1);
+				arr_size = 0;
+			}
+			
+			///////// ALLOCATOR
+			allocator_type	get_allocator() const
+			{
+				return (allocator_type());
 			}
 
 			///////// CAPACITY
@@ -728,6 +769,12 @@ namespace ft
 					_move_array(n);
 			};
 
+			void	shrink_to_fit()
+			{
+				if (vec_capacity > arr_size)
+					_move_array(arr_size);
+			};
+
 			///////// ELEMENT ACCESS
 			T &operator[](int index)
 			{
@@ -789,27 +836,80 @@ namespace ft
 				return (my_iterator(array + arr_size));
 			};
 
-			reverse_iterator rbegin()
+			reverse_iterator<T> rbegin()
 			{
-				return (reverse_iterator(array + arr_size - 1));
+				return (reverse_iterator<T>(array + arr_size - 1));
 			};
 
-			reverse_iterator crbegin() const
+			reverse_iterator<T> crbegin() const
 			{
-				return (reverse_iterator(array + arr_size - 1));
+				return (reverse_iterator<T>(array + arr_size - 1));
 			};
 
-			reverse_iterator rend()
+			reverse_iterator<T> rend()
 			{
-				return (reverse_iterator(array - 1));
+				return (reverse_iterator<T>(array - 1));
 			};
 
-			reverse_iterator crend() const
+			reverse_iterator<T> crend() const
 			{
-				return (reverse_iterator(array - 1));
+				return (reverse_iterator<T>(array - 1));
 			};
 
 	};
+
+	template<class T, class Alloc>
+	bool	operator== (const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return (false);
+		for (size_t i = 0; i < lhs.size(); i++)
+		{
+			if (lhs[i] != rhs[i])
+				return (false);
+		}
+		return (true);
+	}
+
+	template<class T, class Alloc>
+	bool	operator!= (const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return (!(lhs == rhs));
+	}
+
+	template<class T, class Alloc>
+	bool	operator< (const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return (ft::lexicographical_compare(lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend()));
+	}
+
+	template<class T, class Alloc>
+	bool	operator> (const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return (rhs < lhs);
+	}
+
+	template<class T, class Alloc>
+	bool	operator<= (const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return (!(rhs < lhs));
+	}
+
+	template<class T, class Alloc>
+	bool	operator>= (const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return (!(lhs < rhs));
+	}
+	
+}
+
+namespace std
+{
+	template<class T, class Alloc>
+	void	swap (ft::vector<T, Alloc> &x, ft::vector<T, Alloc> &y)
+	{
+		x.swap(y);
+	}
 }
 
 /*

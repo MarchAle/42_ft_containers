@@ -1,0 +1,29 @@
+it 1
+my_vec.begin() 1
+it2 666
+my_vec_assign.begin() 666
+
+it 1
+my_vec.begin() 666
+it2 666
+my_vec_assign.begin() 1
+
+it 1
+my_vec.begin() 1
+it2 666
+my_vec_assign.begin() 666
+
+Size : 5 Capacity : 8
+Size : 5 Capacity : 5
+
+print my_vec[i]	1 1
+print my_vec[i]	2 2
+print my_vec[i]	3 3
+print my_vec[i]	4 4
+print my_vec[i]	5 5
+
+print my_vec_assign[i]	666 666
+print my_vec_assign[i]	666 666
+print my_vec_assign[i]	666 666
+print my_vec_assign[i]	666 666
+print my_vec_assign[i]	666 666
