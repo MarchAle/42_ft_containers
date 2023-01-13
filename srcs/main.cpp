@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 14:08:50 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/11 18:55:18 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/13 15:58:21 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	main()
 	int array_size = 4;
 	ft::vector<int> my_vec;
 	ft::vector<int> my_vec_assign;
-	
 
 	for (int i = 1; i < array_size + 1; i++)
 	{
@@ -33,8 +32,16 @@ int	main()
 	// my_vec_assign.assign(2, 111);
 	// my_vec_assign.push_back(555);
 	// my_vec_assign.pop_back();
-	// my_vec.assign(5, 666);
-	my_vec.insert(my_vec.begin(), 2, 321);
+	my_vec.assign(5, 1);
+	my_vec.insert(my_vec.begin(), 4, 2);
+	std::cout << my_vec[2] << std::endl;
+	std::cout << my_vec.size() << std::endl;
+	std::cout << my_vec.capacity() << std::endl;
+	
+	ft::vector<int>::reverse_iterator rit;
+	rit = my_vec.rbegin();
+	std::cout << *(rit--) << std::endl;
+	std::cout << *(rit--) << std::endl;
 	
 	// std::vector<int>::iterator it = my_vec.begin();
 	// std::vector<int>::iterator it2 = my_vec_assign.begin();

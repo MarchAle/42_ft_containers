@@ -6,30 +6,52 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 16:34:26 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/11 16:42:58 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/13 16:02:52 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REVERSE_ITERATOR_HPP
 # define REVERSE_ITERATOR_HPP
 
+# include "./iterator_traits.hpp"
+
 namespace ft
 {
-	template<typename T>
+	template<typename Iter>
 	class reverse_iterator
 	{
-		private:
-			T *data;
+		protected:
+			Iter data;
 
 		public:
-			reverse_iterator(T* ptr)
+			typedef Iter													iterator_type;
+			typedef	typename ft::iterator_traits<Iter>::iterator_category	iterator_category;
+			typedef typename ft::iterator_traits<Iter>::value_type			value_type;
+			typedef typename ft::iterator_traits<Iter>::difference_type		difference_type;
+			typedef typename ft::iterator_traits<Iter>::pointer				pointer;
+			typedef typename ft::iterator_traits<Iter>::reference			reference;
+			
+			iterator_type	base() const
 			{
-				data = ptr;
-			};
-			reverse_iterator(const reverse_iterator &src)
+				return (data);
+			}
+			explicit reverse_iterator(iterator_type it) : data(it)
 			{
-				data = src.data;
+				// data = it;
 			};
+			reverse_iterator() : data()
+			{
+				
+			}
+			reverse_iterator(const reverse_iterator &src) : data(src.data)
+			{
+				// data = src.data;
+			};
+			reverse_iterator	&operator=(const reverse_iterator &src)
+			{
+				this->data = src.base();
+				return (*this);
+			}
 			~reverse_iterator(){};
 			
 			//////// INCREMENT DECREMENT
@@ -57,19 +79,21 @@ namespace ft
 			}
 			
 			//////// INDEX OPERATOR
-			T &operator[](int index)
+			reference operator[](int index)
 			{
 				return (*(data[index]));	
 			};
 			
-			T *operator->()
+			pointer	operator->()
 			{
-				return (data);	
+				return (--base().operator->());	
 			};
 			
-			T &operator*()
+			reference operator*()
 			{
-				return (*data);	
+				Iter tmp = data;
+				tmp--;
+				return (*tmp);
 			};
 
 			//////// COMPARAISON OPERATOR

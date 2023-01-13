@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/11 19:01:00 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/13 17:37:30 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ namespace ft
 					typedef	T&								reference;
 					typedef std::random_access_iterator_tag iterator_category;
 					
+					my_iterator()
+					{};
 					my_iterator(T* ptr)
 					{
 						data = ptr;
@@ -379,11 +381,12 @@ namespace ft
 			}
 			
 		public:
-			typedef T 			value_type;
-			typedef Allocator 	allocator_type;
-			typedef	ptrdiff_t	difference_type;
-			typedef	size_t		size_type;
-			typedef my_iterator	iterator;
+			typedef T 								value_type;
+			typedef Allocator 						allocator_type;
+			typedef	ptrdiff_t						difference_type;
+			typedef	size_t							size_type;
+			typedef my_iterator						iterator;
+			typedef typename ft::reverse_iterator<iterator>	reverse_iterator;
 			
 			/////////// DEFAULT CONSTRUCTOR
 			explicit vector(const allocator_type& alloc = allocator_type()) : alloc(alloc)
@@ -397,22 +400,15 @@ namespace ft
 			template <class InputIterator>
 			vector (typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()) : alloc(alloc)
 			{
-				size_type 		size = 0;
+				difference_type		size = std::distance(first, last);
 				
-				array = NULL;
-				while (first != last)
-				{
-					size++;
-					first++;
-				}
 				arr_size = size;
 				vec_capacity = size;
 				array = this->alloc.allocate(vec_capacity);
-				while (size > 0)
+				for (difference_type i = 0; i < size; i++)
 				{
-					this->alloc.construct(array + size, *first);
-					size--;
-					first--;
+					this->alloc.construct(array + i, *first);
+					first++;
 				}
 			}
 			/////////// FILL CONSTRUCTOR
@@ -444,9 +440,11 @@ namespace ft
 			/////////// DESTRUCTOR
 			~vector()
 			{
-				for (size_t i = 0; i < arr_size; i++)
-					alloc.destroy(array + i);
-				alloc.deallocate(array, vec_capacity);
+				clear();
+				array = NULL;
+				// for (size_t i = 0; i < arr_size; i++)
+				// 	alloc.destroy(array + i);
+				// alloc.deallocate(array, vec_capacity);
 			};
 
 			///////// MODIFIERS
@@ -525,7 +523,16 @@ namespace ft
 					throw std::out_of_range("Can't insert outside vector");
 				arr_size++;
 				if (arr_size > vec_capacity)
-					_move_array(vec_capacity * 2);
+				{
+					// if (vec_capacity == 0)
+					// {
+					// 	vec_capacity++;
+					// 	array = alloc.allocate(vec_capacity);
+					// }
+					// while (arr_size > vec_capacity)
+					// 	vec_capacity *= 2;
+					_move_array(arr_size);
+				}
 				while (end >= index)
 				{
 					alloc.construct(array + end + 1, array[end]);
@@ -548,9 +555,14 @@ namespace ft
 				arr_size += n;
 				if (arr_size > vec_capacity)
 				{
-					if (vec_capacity == 0)
-						vec_capacity++;
-					_move_array(vec_capacity * 2);
+					// if (vec_capacity == 0)
+					// {
+					// 	vec_capacity++;
+					// 	array = alloc.allocate(vec_capacity);
+					// }
+					// while (arr_size > vec_capacity)
+					// 	vec_capacity *= 2;
+					_move_array(arr_size);
 				}
 				while (end >= index)
 				{
@@ -582,14 +594,14 @@ namespace ft
 				arr_size += n;
 				if (arr_size > vec_capacity)
 				{
-					if (vec_capacity == 0)
-					{
-						vec_capacity++;
-						array = alloc.allocate(vec_capacity);
-					}
-					while (arr_size > vec_capacity)
-						vec_capacity *= 2;
-					_move_array(vec_capacity);
+					// if (vec_capacity == 0)
+					// {
+					// 	vec_capacity++;
+					// 	array = alloc.allocate(vec_capacity);
+					// }
+					// while (arr_size > vec_capacity)
+					// 	vec_capacity *= 2;
+					_move_array(arr_size);
 				}
 				while (end > index)
 				{
@@ -609,7 +621,7 @@ namespace ft
 				}
 			}
 
-			iterator	erase(iterator position)
+			iterator	›(iterator position)
 			{
 				size_type	index = position - this->begin();
 				
@@ -826,7 +838,7 @@ namespace ft
 				return (my_iterator(array));
 			};
 
-			my_iterator end()
+			my_iterator end() const
 			{
 				return (my_iterator(array + arr_size));
 			};
@@ -836,25 +848,26 @@ namespace ft
 				return (my_iterator(array + arr_size));
 			};
 
-			reverse_iterator<T> rbegin()
+			reverse_iterator rbegin() const
 			{
-				return (reverse_iterator<T>(array + arr_size - 1));
+				return reverse_iterator(this->end());
+				// return (reverse_iterator(array + arr_size - 1));
 			};
 
-			reverse_iterator<T> crbegin() const
+			// reverse_iterator crbegin() const
+			// {
+			// 	return (reverse_iterator<T>(array + arr_size - 1));
+			// };
+
+			reverse_iterator rend()
 			{
-				return (reverse_iterator<T>(array + arr_size - 1));
+				return (reverse_iterator(array - 1));
 			};
 
-			reverse_iterator<T> rend()
-			{
-				return (reverse_iterator<T>(array - 1));
-			};
-
-			reverse_iterator<T> crend() const
-			{
-				return (reverse_iterator<T>(array - 1));
-			};
+			// reverse_iterator crend() const
+			// {
+			// 	return (reverse_iterator<T>(array - 1));
+			// };
 
 	};
 
