@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/13 11:32:39 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/13 17:37:30 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/16 17:03:29 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,21 +332,22 @@ namespace ft
 			size_t		old_capacity;
 			size_t		vec_capacity;
 			
-			void	_move_array(size_t new_capacity)
-			{
-				T*		new_array;
+			// void	_move_array(size_t new_capacity)
+			// {
+			// 	T*		new_array;
 				
-				old_capacity = vec_capacity;
-				vec_capacity = new_capacity;
-				new_array = alloc.allocate(vec_capacity);
-				for (size_t i = 0; i < arr_size; i++)
-				{
-					alloc.construct(new_array + i, array[i]);
-					alloc.destroy(array + i);
-				}
-				alloc.deallocate(array, old_capacity);
-				array = new_array;
-			};
+			// 	old_capacity = vec_capacity;
+			// 	vec_capacity = new_capacity;
+			// 	new_array = alloc.allocate(vec_capacity);
+			// 	for (size_t i = 0; i < arr_size; i++)
+			// 	{
+			// 		alloc.construct(new_array + i, array[i]);
+			// 		alloc.destroy(array + i);
+			// 	}
+			// 	if (old_capacity > 0)
+			// 		alloc.deallocate(array, old_capacity);
+			// 	array = new_array;
+			// };
 
 			void	_resize_cpy(T *new_array, size_t &n)
 			{
@@ -428,11 +429,15 @@ namespace ft
 			/////////// ASSIGNATION OPERATOR OVERLOAD
 			vector &operator=(const vector &src)
 			{
-				this->alloc = src.alloc;
+				if (this == &src)
+					return (*this);
+				clear();
+				reserve(src.arr_size);
+				this->alloc = allocator_type();
 				this->array = alloc.allocate(src.vec_capacity);
+				this->arr_size = src.arr_size;
 				for (size_t i = 0; i < src.arr_size; i++)
 					alloc.construct(array + i, src.array[i]);
-				this->arr_size = src.arr_size;
 				this->vec_capacity = src.vec_capacity;
 				
 				return (*this);
@@ -440,72 +445,37 @@ namespace ft
 			/////////// DESTRUCTOR
 			~vector()
 			{
-				clear();
-				array = NULL;
-				// for (size_t i = 0; i < arr_size; i++)
-				// 	alloc.destroy(array + i);
-				// alloc.deallocate(array, vec_capacity);
+				for (size_t i = 0; i < arr_size; i++)
+					alloc.destroy(array + i);
+				alloc.deallocate(array, vec_capacity);
 			};
 
 			///////// MODIFIERS
 			template<class InputIterator>
 			void assign(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
-				size_type size = 0;
-				InputIterator tmp = first;
-				
-				while (tmp != last)
-				{
-					size++;
-					tmp++;
-				}
-				for (size_t i = 0; i < arr_size; i++)
-					alloc.destroy(array + i);
-				if (size > vec_capacity)
-				{
-					reserve(size);
-					arr_size = size;
-				}
-				for (size_t i = 0; i < size; i++)
+				ptrdiff_t size = std::distance(first, last);
+				clear();
+				reserve(size);
+				for (ptrdiff_t i = 0; i < size; i++)
 					alloc.construct(array + i, *(first + i));
+				arr_size = size;
 			}
 			
 			void	assign(size_t n, const T &val)
 			{
-				// *this->clear();
-				// *this->reserve(n);
-				// *this->insert(*this->begin(), n, val);
-				for (size_t i = 0; i < arr_size; i++)
-					alloc.destroy(array + i);
+				clear();
 				reserve(n);
 				for (size_t i = 0; i < n; i++)
 					alloc.construct(array + i, val);
-				// if (n <= vec_capacity)
-				// {
-				// 	for (size_t i = 0; i < n; i++)
-				// 		alloc.construct(array + i, val);
-				// }
-				// else
-				// {
-				// 	for (size_t i = 0; i < arr_size; i++)
-				// 		alloc.construct(array + i, val);
-				// 	reserve(n);
-				// 	for (size_t i = arr_size; i < n; i++)
-				// 		alloc.construct(array + i, val);
-				// }
 				arr_size = n;
 			}
 
 			void	push_back(const T &e)
 			{
-				if (arr_size == 0)
-					array = alloc.allocate(vec_capacity);
-				else if (arr_size + 1 > vec_capacity)
-					_move_array(vec_capacity * 2);
+				reserve(arr_size + 1);
 				alloc.construct(array + arr_size, e);
 				arr_size++;
-				if (arr_size > vec_capacity)
-					vec_capacity = arr_size;
 			};
 
 			void	pop_back()
@@ -521,18 +491,13 @@ namespace ft
 				
 				if (index > end || index < 0)
 					throw std::out_of_range("Can't insert outside vector");
-				arr_size++;
-				if (arr_size > vec_capacity)
+				if (arr_size == 0)
 				{
-					// if (vec_capacity == 0)
-					// {
-					// 	vec_capacity++;
-					// 	array = alloc.allocate(vec_capacity);
-					// }
-					// while (arr_size > vec_capacity)
-					// 	vec_capacity *= 2;
-					_move_array(arr_size);
+					this->push_back(val);
+					return (array + index);
 				}
+				arr_size++;
+				reserve(arr_size);
 				while (end >= index)
 				{
 					alloc.construct(array + end + 1, array[end]);
@@ -552,18 +517,15 @@ namespace ft
 				
 				if (index > end || index < 0)
 					throw std::out_of_range("Can't insert outside vector");
-				arr_size += n;
-				if (arr_size > vec_capacity)
+				if (arr_size == 0)
 				{
-					// if (vec_capacity == 0)
-					// {
-					// 	vec_capacity++;
-					// 	array = alloc.allocate(vec_capacity);
-					// }
-					// while (arr_size > vec_capacity)
-					// 	vec_capacity *= 2;
-					_move_array(arr_size);
+					this->reserve(n);
+					for (size_type i = 0; i < n; i++)
+						this->push_back(val);
+					return ;
 				}
+				arr_size += n;
+				reserve(arr_size);
 				while (end >= index)
 				{
 					alloc.construct(array + end + n, array[end]);
@@ -591,18 +553,15 @@ namespace ft
 				last--;
 				if (index > end || index < 0)
 					throw std::out_of_range("Can't insert outside vector");
-				arr_size += n;
-				if (arr_size > vec_capacity)
+				if (arr_size == 0)
 				{
-					// if (vec_capacity == 0)
-					// {
-					// 	vec_capacity++;
-					// 	array = alloc.allocate(vec_capacity);
-					// }
-					// while (arr_size > vec_capacity)
-					// 	vec_capacity *= 2;
-					_move_array(arr_size);
+					reserve(n);
+					for (ptrdiff_t i = 0; i < n; i++)
+						this->push_back(*(first++));
+					return ;
 				}
+				arr_size += n;
+				reserve(arr_size);
 				while (end > index)
 				{
 					alloc.construct(array + end + n, array[end]);
@@ -621,18 +580,20 @@ namespace ft
 				}
 			}
 
-			iterator	›(iterator position)
+			iterator	erase(iterator position)
 			{
 				size_type	index = position - this->begin();
 				
-				alloc.destroy(array + index);
+				// alloc.destroy(array + index);
 				arr_size--;
 				while (array + index != array + arr_size)
 				{
-					alloc.construct(array + index, *(array + index + 1));
-					alloc.destroy(array + index + 1);
+					array[index] = array[index + 1];
+					// alloc.construct(array + index, *(array + index + 1));
+					// alloc.destroy(array + index + 1);
 					index++;
 				}
+				alloc.destroy(array + arr_size);
 				return (position);
 			}
 
@@ -692,72 +653,66 @@ namespace ft
 				return (alloc.max_size());
 			};
 				
-			void	resize(size_t n)
-			{
-				T*		new_array;
+			// void	resize(size_t n)
+			// {
+			// 	T*		new_array;
 				
-				if (n == arr_size)
-					return ;
-				try
-				{
-					old_capacity = vec_capacity;
-					if (n > vec_capacity)
-					{
-						if (n < 16)
-						{
-							while (vec_capacity < n)
-								vec_capacity += 4;
-						}
-						else
-							vec_capacity = n;
-					}
-					new_array = alloc.allocate(vec_capacity);
-					_resize_cpy(new_array, n);
-					for (size_t i = 0; i < arr_size; i++)
-						alloc.destroy(array + i);
-					alloc.deallocate(array, old_capacity);
-					array = new_array;
-					arr_size = n;
-				}
-				catch(const std::bad_alloc& e)
-				{
-					alloc.deallocate(new_array, vec_capacity);
-					throw ;
-				}
-			};
+			// 	if (n == arr_size)
+			// 		return ;
+			// 	try
+			// 	{
+			// 		old_capacity = vec_capacity;
+			// 		if (n > vec_capacity)
+			// 		{
+			// 			if (n < 16)
+			// 			{
+			// 				while (vec_capacity < n)
+			// 					vec_capacity += 4;
+			// 			}
+			// 			else
+			// 				vec_capacity = n;
+			// 		}
+			// 		new_array = alloc.allocate(vec_capacity);
+			// 		_resize_cpy(new_array, n);
+			// 		for (size_t i = 0; i < arr_size; i++)
+			// 			alloc.destroy(array + i);
+			// 		alloc.deallocate(array, old_capacity);
+			// 		array = new_array;
+			// 		arr_size = n;
+			// 	}
+			// 	catch(const std::bad_alloc& e)
+			// 	{
+			// 		alloc.deallocate(new_array, vec_capacity);
+			// 		throw ;
+			// 	}
+			// };
 
-			void	resize(size_t n, T val)
+			void	resize(size_t n, T val = value_type())
 			{
-				T*		new_array;
+				// T*		new_array;
 				
 				if (n == arr_size)
 					return ;
-				try
+				// old_capacity = vec_capacity;
+				if (n > size())
 				{
-					old_capacity = vec_capacity;
-					if (n > vec_capacity)
-					{
-						if (n < 16)
-						{
-							while (vec_capacity < n)
-								vec_capacity += 4;
-						}
-						else
-							vec_capacity = n;
-					}
-					new_array = alloc.allocate(vec_capacity);
-					_resize_cpy(new_array, n, val);
-					for (size_t i = 0; i < arr_size; i++)
+					reserve(n);
+					for (size_type i = arr_size; i < vec_capacity; i++)
+						push_back(val);
+				}
+				else if (n < size())
+				{
+					for (size_type i = n; i < arr_size; i++)
 						alloc.destroy(array + i);
-					alloc.deallocate(array, old_capacity);
-					array = new_array;
-					arr_size = n;
 				}
-				catch(const std::bad_alloc& e)
-				{
-					// alloc.deallocate(new_array, vec_capacity);
-					throw ;
-				}
+				arr_size = n;
+				// new_array = alloc.allocate(vec_capacity);
+				// _resize_cpy(new_array, n, val);
+				// for (size_t i = 0; i < arr_size; i++)
+				// 	alloc.destroy(array + i);
+				// alloc.deallocate(array, old_capacity);
+				// array = new_array;
+				// arr_size = n;
 			};
 				
 			size_t	capacity() const
@@ -775,16 +730,32 @@ namespace ft
 
 			void	reserve(size_t n)
 			{
-				if (n <= vec_capacity)
-					return ;
-				else
-					_move_array(n);
-			};
+				T*		new_array;
 
-			void	shrink_to_fit()
-			{
-				if (vec_capacity > arr_size)
-					_move_array(arr_size);
+				try
+				{
+					if (n <= vec_capacity)
+						return ;
+					old_capacity = vec_capacity;
+					if (n > vec_capacity * 2 || (n > vec_capacity && n > arr_size * 2))
+						vec_capacity = n;
+					else
+						vec_capacity *= 2;
+					new_array = alloc.allocate(vec_capacity);
+					for (size_t i = 0; i < arr_size; i++)
+					{
+						alloc.construct(new_array + i, array[i]);
+						alloc.destroy(array + i);
+					}
+					// if (old_capacity > 0)
+						alloc.deallocate(array, old_capacity);
+					array = new_array;
+				}
+				catch(const std::bad_alloc& e)
+				{
+					throw;
+				}
+				
 			};
 
 			///////// ELEMENT ACCESS
