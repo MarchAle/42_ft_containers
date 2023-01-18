@@ -6,7 +6,7 @@
 /*   By: amarchal <amarchal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 16:34:26 by amarchal          #+#    #+#             */
-/*   Updated: 2023/01/13 16:02:52 by amarchal         ###   ########.fr       */
+/*   Updated: 2023/01/18 11:46:29 by amarchal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,39 @@ namespace ft
 			bool operator<(const reverse_iterator &other) const
 			{
 				return (data < other->data);
+			}
+
+			//////// ARITHMETIC OPERATOR
+			reverse_iterator operator+(int n) const
+			{
+				return reverse_iterator(data + n);
+			}
+			
+			reverse_iterator operator-(int n) const
+			{
+				return reverse_iterator(data - n);
+			}
+			
+			int operator+(reverse_iterator other) const
+			{
+				return data + other.data;
+			}
+			
+			int operator-(reverse_iterator other) const
+			{
+				return data - other.data;
+			}
+
+			reverse_iterator &operator+=(difference_type n)
+			{
+				data += n;
+				return (*this);
+			}
+
+			reverse_iterator &operator-=(difference_type n)
+			{
+				data += n;
+				return (*this);
 			}
 	};
 };
